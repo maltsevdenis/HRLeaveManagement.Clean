@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace HRLeaveManagement.Application.Exceptions
 {
     public class BadRequestException : Exception

@@ -21,7 +21,7 @@ public class CreateLeaveTypeCommandValidator : AbstractValidator<CreateLeaveType
 
         RuleFor(q => q)
             .MustAsync(LeaveTypeUnique).WithMessage("Leave type already exists");
-        this._leaveTypeRepository = leaveTypeRepository;
+        _leaveTypeRepository = leaveTypeRepository;
     }
 
     private Task<bool> LeaveTypeUnique(CreateLeaveTypeCommand command, CancellationToken token)
