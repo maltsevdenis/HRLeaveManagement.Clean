@@ -20,7 +20,8 @@ public class CreateLeaveTypeCommandValidator : AbstractValidator<CreateLeaveType
             .GreaterThan(1).WithMessage("{PropertyName} cannot be less than 1");
 
         RuleFor(q => q)
-            .MustAsync(LeaveTypeUnique).WithMessage("Leave type already exists");
+            .MustAsync(LeaveTypeUnique)
+            .WithMessage("Leave type already exists");
         _leaveTypeRepository = leaveTypeRepository;
     }
 
