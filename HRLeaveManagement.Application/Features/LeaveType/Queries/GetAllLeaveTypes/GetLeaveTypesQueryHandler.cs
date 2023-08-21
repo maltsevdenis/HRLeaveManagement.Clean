@@ -7,13 +7,13 @@ using MediatR;
 
 namespace HRLeaveManagement.Application.Features.LeaveType.Queries.GetAllLeaveTypes;
 
-public class GetLeaveTypesHandler : IRequestHandler<GetLeaveTypesQuery, List<LeaveTypeDto>>
+public class GetLeaveTypesQueryHandler : IRequestHandler<GetLeaveTypesQuery, List<LeaveTypeDto>>
 {
     private readonly IMapper _mapper;
     private readonly ILeaveTypeRepository _leaveTypeRepository;
-    private readonly IAppLogger<GetLeaveTypesHandler> _logger;
+    private readonly IAppLogger<GetLeaveTypesQueryHandler> _logger;
 
-    public GetLeaveTypesHandler(IMapper mapper, ILeaveTypeRepository leaveTypeRepository, IAppLogger<GetLeaveTypesHandler> logger)
+    public GetLeaveTypesQueryHandler(IMapper mapper, ILeaveTypeRepository leaveTypeRepository, IAppLogger<GetLeaveTypesQueryHandler> logger)
     {
         _mapper = mapper;
         _leaveTypeRepository = leaveTypeRepository;
