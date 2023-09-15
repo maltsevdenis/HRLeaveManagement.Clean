@@ -1,4 +1,5 @@
 ﻿using HRLeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest;
+using HRLeaveManagement.Application.Features.LeaveRequest.Commands.ChangeLeaveRequestApproval;
 using HRLeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeaveRequest;
 using HRLeaveManagement.Application.Features.LeaveRequest.Commands.DeleteLeaveRequest;
 using HRLeaveManagement.Application.Features.LeaveRequest.Commands.UpdateLeaveRequest;
@@ -7,6 +8,7 @@ using HRLeaveManagement.Application.Features.LeaveRequest.Queries.GetLeaveReques
 
 using MediatR;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +17,7 @@ namespace HRLeaveManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LeaveRequestsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -34,7 +37,7 @@ namespace HRLeaveManagement.Api.Controllers
 
         // GET api/<LeaveRequestsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<LeaveRequestListDto>> Get(int id)
+        public async Task<ActionResult<LeaveRequestDetailsDto>> Get(int id)
         {
             var leaveRequest = await _mediator.Send(new GetLeaveRequestDetailsQuery { Id = id });
             return Ok(leaveRequest);
@@ -94,7 +97,7 @@ namespace HRLeaveManagement.Api.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult> UpdateApproval(UpdateLeaveRequestCommand updateApprovalRequest)
+        public async Task<ActionResult> UpdateApproval(ChangeLeaveRequestApprovalCommand updateApprovalRequest)
         {
             await _mediator.Send(updateApprovalRequest);
             return NoContent();

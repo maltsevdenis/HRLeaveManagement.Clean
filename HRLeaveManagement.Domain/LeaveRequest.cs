@@ -6,6 +6,9 @@ namespace HRLeaveManagement.Domain
 {
     public class LeaveRequest : BaseEntity
     {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
         [ForeignKey("LeaveTypeId")]
         public LeaveType? LeaveType { get; set; }
         public int LeaveTypeId { get; set; }

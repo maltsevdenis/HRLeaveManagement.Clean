@@ -12,11 +12,14 @@ namespace HRLeaveManagement.Application.Features.LeaveRequest.Commands.CancelLea
 public class CancelLeaveRequestCommandHandler : IRequestHandler<CancelLeaveRequestCommand, Unit>
 {
     private readonly ILeaveRequestRepository _leaveRequestRepository;
+    private readonly ILeaveAllocationRepository _leaveAllocationRepository;
     private readonly IEmailSender _emailSender;
 
-    public CancelLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository, IEmailSender emailSender)
+    public CancelLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository, 
+        ILeaveAllocationRepository leaveAllocationRepository, IEmailSender emailSender)
     {
         _leaveRequestRepository = leaveRequestRepository;
+        _leaveAllocationRepository = leaveAllocationRepository;
         _emailSender = emailSender;
     }
 
@@ -28,15 +31,32 @@ public class CancelLeaveRequestCommandHandler : IRequestHandler<CancelLeaveReque
             throw new NotFoundException(nameof(leaveRequest), request.Id);
         
         leaveRequest.Cancelled = true;
+        await _leaveRequestRepository.UpdateAsync(leaveRequest);
 
-        var email = new EmailMessage
+        if (leaveRequest.Approved == true)
         {
-            To = string.Empty,
-            Body = $"Your leave request for {request.StartDate:D} to {request.EndDate:D} has been cancelled successfully.",
-            Subject = "Leave Rerquest Cancelled"
-        };
+            int daysRequested = (int)(leaveRequest.EndDate - leaveRequest.StartDate).TotalDays;
+            var allocation = await _leaveAllocationRepository.GetUserAllocations(leaveRequest.RequestingEmployeeId, leaveRequest.LeaveTypeId);
+            allocation.NumberOfDays += daysRequested;
 
-        await _emailSender.SendEmail(email);
+            await _leaveAllocationRepository.UpdateAsync(allocation);
+        }
+
+        try
+        {
+            var email = new EmailMessage
+            {
+                To = string.Empty,
+                Body = $"Your leave request for {request.StartDate:D} to {request.EndDate:D} has been cancelled successfully.",
+                Subject = "Leave Rerquest Cancelled"
+            };
+
+            await _emailSender.SendEmail(email);
+        }
+        catch (Exception) 
+        {
+            // log error
+        }
         return Unit.Value;
     }
 }

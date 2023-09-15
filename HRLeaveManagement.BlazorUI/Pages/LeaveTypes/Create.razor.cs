@@ -1,11 +1,29 @@
-﻿namespace HRLeaveManagement.BlazorUI.Pages.LeaveTypes;
+﻿using HRLeaveManagement.BlazorUI.Contracts;
+using HRLeaveManagement.BlazorUI.Models.LeaveTypes;
+
+using Microsoft.AspNetCore.Components;
+
+namespace HRLeaveManagement.BlazorUI.Pages.LeaveTypes;
 
 public partial class Create
 {
-    public string Message { get; set; }
+    [Inject]
+    NavigationManager _navManager { get; set; }
+
+    [Inject]
+    ILeaveTypeService _client { get; set; }
+    public string Message { get; private set; }
+
+
+    LeaveTypeVM leaveType = new LeaveTypeVM();
 
     protected async Task CreateLeaveType()
     {
-
+        var response = await _client.CreateLeaveType(leaveType);
+        if (response.Success)
+        {
+            _navManager.NavigateTo("/leavetypes/");
+        }
+        Message = response.Message;
     }
 }
