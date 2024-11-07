@@ -1,1 +1,1 @@
-Example of implementation application for restaurant using Clean Architecture.
+Example of implementation application for a leave management system for HR department using Clean Architecture.
